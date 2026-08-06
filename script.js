@@ -5,7 +5,7 @@ const users = [
     bio: "silent chaos in a loud world 🌑🖤 | not for everyone",
   },
   {
-    name: "kiara mehta",
+    name: "amita mehta",
     pic: "https://i.pinimg.com/736x/1f/2f/85/1f2f856bf3a020ed8ee9ecb3306ae074.jpg",
     bio: "main character energy 🎬 | coffee > everything ☕✨",
   },
@@ -36,8 +36,15 @@ const users = [
   },
 ];
 
-function showusers(arr){
-    arr.forEach(function(user){
+const cardsContainer = document.querySelector(".cards");
+const inp = document.querySelector(".inp");
+
+function showUsers(arr) {
+    cardsContainer.innerHTML = "";
+
+    const fragment = document.createDocumentFragment();
+
+    arr.forEach(({ name, pic, bio }) => {
         const wrapper = document.createElement("div");
         wrapper.className = "flex gap-10";
 
@@ -45,39 +52,41 @@ function showusers(arr){
         card.className = "card";
 
         const img = document.createElement("img");
-        img.src =
-        user.pic;
         img.className = "bg-img";
-        img.alt = "Background Image";
+        img.src = pic;
+        img.alt = name;
 
         const blurredLayer = document.createElement("div");
-        blurredLayer.style.backgroundImage = `url(${user.pic})`;
         blurredLayer.className = "blurred-layer";
+        blurredLayer.style.backgroundImage = `url(${pic})`;
 
         const content = document.createElement("div");
         content.className = "content";
 
         const heading = document.createElement("h3");
-        heading.textContent = user.name;
+        heading.textContent = name;
 
         const paragraph = document.createElement("p");
-        paragraph.textContent = user.bio;
+        paragraph.textContent = bio;
 
-        // Append elements
-        content.appendChild(heading);
-        content.appendChild(paragraph);
+        content.append(heading, paragraph);
+        card.append(img, blurredLayer, content);
+        wrapper.append(card);
 
-        card.appendChild(img);
-        card.appendChild(blurredLayer);
-        card.appendChild(content);
+        fragment.append(wrapper);
+    });
 
-        wrapper.appendChild(card);
-
-        // Add to the page
-        document.body.appendChild(wrapper);
-        // OR
-        // document.querySelector(".container").appendChild(wrapper);
-    })
+    cardsContainer.append(fragment);
 }
 
-showusers(users);
+showUsers(users);
+
+inp.addEventListener("input", () => {
+    const value = inp.value.trim().toLowerCase();
+
+    const filteredUsers = users.filter(({ name }) =>
+        name.toLowerCase().includes(value)
+    );
+
+    showUsers(filteredUsers);
+});
